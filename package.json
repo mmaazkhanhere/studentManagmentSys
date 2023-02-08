@@ -1,0 +1,29 @@
+{
+  "name": "studentmanagmentsys",
+  "version": "1.0.0",
+  "description": "To initialise project and create .json file, in terminal type npm init -y",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mmaazkhanhere/studentManagmentSys.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mmaazkhanhere/studentManagmentSys/issues"
+  },
+  "homepage": "https://github.com/mmaazkhanhere/studentManagmentSys#readme",
+  "devDependencies": {
+    "@types/chalk-animation": "^1.6.1",
+    "@types/inquirer": "^9.0.3",
+    "@types/node": "^18.13.0"
+  },
+  "dependencies": {
+    "chalk": "^5.2.0",
+    "chalk-animation": "^2.0.3",
+    "inquir
