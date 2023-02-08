@@ -71,15 +71,18 @@ async function dropStudent() {
             message: 'Enter student name: '
         }])
         .then(async (answer) => {
+        let index = -1;
         for (let i = 0; i < studentData.length; i++) {
             if (studentData[i].studentName == answer.studentName) {
-                console.log(studentData.indexOf(answer.studentName));
-                studentData.splice(studentData.indexOf(studentData[i]), 1);
-                await studentList();
+                index = i;
             }
-            else {
-                console.log(chalk.bgRed('Student not found'));
-            }
+        }
+        if (index == -1) {
+            console.log(chalk.bgRed('Student not found'));
+        }
+        else {
+            studentData.splice(index, 1);
+            await studentList();
         }
     });
 }
