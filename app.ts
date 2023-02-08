@@ -4,51 +4,58 @@ import inquirer from "inquirer";
 import chalk from "chalk";
 import chalkAnimation from "chalk-animation";
 
-interface studentInfo{
+interface studentInfo{ //interface for student data
     studentName:string,
     age:number,
     grade:string,
-    feesDeposited:number,
-    feesRemaining:number
+    feePaid:number,
+    feeRemaining:number
 }
 
-let studentData:studentInfo[]=[{
+let studentData:studentInfo[]=[
+    //dummy user data for the system including user basic info and fee due
+    {
     studentName:'Maaz',
     age:22,
     grade:'C',
-    feesDeposited:3000,
-    feesRemaining:0
-},
-{
+    feePaid:3000,
+    feeRemaining:0
+    },
+    {
     studentName:'Khan',
     age:27,
     grade:'A',
-    feesDeposited:2000,
-    feesRemaining:1000
+    feePaid:2000,
+    feeRemaining:1000
 }]
 
-let feeToPay:number=3000;
+let feeToPay:number=3000; // a variable of global scope as the total fee of the course
 
-function animationStop(){
+function animationStop(){ 
+    //function for the animation duration
     return new Promise((res)=>{
-        setTimeout(res,2000);
+        setTimeout(res,2000); //animation will run for 2 seconds
     })
 }
 
 async function animation(){
+    //function for animation display
     let title=chalkAnimation.rainbow('Student Management System')
     await animationStop()
     title.stop();
 }
 
 async function studentList(){
-    console.log(chalk.bgBlue('Students Enrolled'));
-    console.table(studentData);
+    //function that show the students enrolled with the institution
+    console.log(chalk.bgBlue('Students Enrolled')); 
+    console.table(studentData); //data displayed in the table form
 };
 
 
 async function addStudent(){
-    let newStudent=await inquirer.prompt([{
+    //function for enrolling new students in the institution program
+
+    let newStudent=await inquirer.prompt([{ //prompting user for student information 
         name:'studentName',
         type:'input',
         message:'Enter student name: '
@@ -68,81 +75,106 @@ async function addStudent(){
         type:'number',
         message:'Enter fees paid by the student: '
     }])
-    .then(answer=>{
+    .then(answer=>{ 
+        //after the user provide data, it is add to the student enrolled list
         studentData.push({
             studentName:answer.studentName,
             age:answer.studentAge,
             grade:answer.studentGrade,
-            feesDeposited:answer.studentFees,
-            feesRemaining:feeToPay-answer.studentFees
+            feePaid:answer.studentFees,
+            feeRemaining:feeToPay-answer.studentFees
         })
     });
 
-    await studentList();
+    await studentList(); //calling function to display all the students enrolled
 }
 
 async function dropStudent(){
+    //function for dropping the student from institution enrolled list
+
     let studentDrop= await inquirer.prompt([{
         name:'studentName',
         type:'input',
         message:'Enter student name: '
     }])
     .then(async answer=>{
-        
-        let index:number=-1;
+        //after the user provide data, searching the student data list for the student to drop     
+        let index:number=-1; //defaut value if the user is not found (-1 because index starts from 0 and we are doing it index based)
+
         for(let i=0; i<studentData.length;i++){
+            //looping through user data
             if(studentData[i].studentName == answer.studentName){
-                index=i;
+                index=i; //if student is found in the list, get its index
             }
         }
     
         if(index == -1){
+            //if user isnt found in the list
             console.log(chalk.bgRed('Student not found'))
         }
         else{
+            //if user is found, remove him/her from the institution list
             studentData.splice(index,1);
-            await studentList();
+            await studentList(); //display the institution student list
         }    
         
     })
 }
 
 async function feePayment(){
-    let userName=await inquirer.prompt({
+    //function for the payment of fee
+
+    let userName=await inquirer.prompt({ //user enter a name
         name:'userName',
         type:'input',
         message:'Enter your name: '
     });
 
     for(let i=0;i<studentData.length;i++){
-        if(studentData[i].studentName==userName.userName){
-            console.log(`Payment due ${studentData[i].feesRemaining}`);
-            if(studentData[i].feesRemaining==0){
+        //looping through instutition data list for the name
+
+        if(studentData[i].studentName==userName.userName){ 
+            //if the student name is found, display their due fee
+            console.log(`Payment due ${studentData[i].feeRemaining}`);
+            
+            //if no fee is due, display it
+            if(studentData[i].feeRemaining==0){
                 console.log('No fee due')
             }
             else
             {
+                //if fee is due, the user is ask to enter amount of fee to pay
                 let feepayment=await inquirer.prompt({
                     name:'feepayment',
                     type:'number',
                     message:'Enter fee to pay: '
                 })
-                if(feepayment.feepayment==studentData[i].feesRemaining){
+
+                if(feepayment.feepayment==studentData[i].feeRemaining){
+                    //if entered amount is equal to amount due, feeRemaining will be made 0 and their fee paid property gets equal to 3000
                     console.log(chalk.bgBlue(`Fee successful paid`))
-                    studentData[i].feesDeposited=3000;
-                    studentData[i].feesRemaining=0;
-                    console.table(studentData[i]);
+                    studentData[i].feePaid=3000;
+                    studentData[i].feeRemaining=0;
+
+                    console.table(studentData[i]); //display the infomration for the student
                 }
                 else{
+                    //if amount entered is more or less than due fee, error will be printed
                     console.log(chalk.bgRed('Wrong amount entered!'));
                 }
                 
             }
         }
+
+        else{
+            //if user is not found, error will be printed
+            console.log(chalk.bgRed(`Student not in the database.`))
+        }
     }
 }
 
 async function mainMenu(){
+    //main menu function, which will be performed at least once and then repeat if the user desire to do so
     do
     {    
         let operation=await inquirer.prompt({
@@ -150,9 +182,10 @@ async function mainMenu(){
             type:'list',
             message:'Select an operation you want to perform: ',
             choices:['Students Enrolled','Add New Student','Drop Student','Pay Fees']
-        })
+        }) //user choose the operation to perform
 
         switch(operation.operation){
+            //perform different operation based on user choice
             case 'Students Enrolled':
                 await studentList();
                 break;
@@ -166,13 +199,16 @@ async function mainMenu(){
                 await feePayment();
                 break;
         }
+
         var doAgain=await inquirer.prompt({
+            //if user want to perform any other operation
             name:'doAgain',
             type:'list',
             message:'Do you want to perform other operations?',
             choices:['Yes','No']
         })
-    }while(doAgain.doAgain=='Yes')
+    }while(doAgain.doAgain=='Yes') //continue looping until user select No
 }
-await animation();
-mainMenu();
+
+await animation(); //calling the animation function
+mainMenu(); //calling the main function
