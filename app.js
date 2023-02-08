@@ -81,7 +81,7 @@ async function dropStudent() {
         }])
         .then(async (answer) => {
         //after the user provide data, searching the student data list for the student to drop     
-        let index = -1; //defaut value if the user is not found
+        let index = -1; //defaut value if the user is not found (-1 because index starts from 0 and we are doing it index based)
         for (let i = 0; i < studentData.length; i++) {
             //looping through user data
             if (studentData[i].studentName == answer.studentName) {
@@ -110,10 +110,10 @@ async function feePayment() {
         //looping through instutition data list for the name
         if (studentData[i].studentName == userName.userName) {
             //if the student name is found, display their due fee
-            console.log(`Payment due ${studentData[i].feeRemaining}`);
+            console.log(chalk.bgGray(`Payment due ${studentData[i].feeRemaining}`));
             //if no fee is due, display it
             if (studentData[i].feeRemaining == 0) {
-                console.log('No fee due');
+                console.log(chalk.bgBlue('No fee due'));
             }
             else {
                 //if fee is due, the user is ask to enter amount of fee to pay
@@ -134,10 +134,6 @@ async function feePayment() {
                     console.log(chalk.bgRed('Wrong amount entered!'));
                 }
             }
-        }
-        else {
-            //if user is not found, error will be printed
-            console.log(chalk.bgRed(`Student not in the database.`));
         }
     }
 }

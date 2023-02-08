@@ -135,11 +135,11 @@ async function feePayment(){
 
         if(studentData[i].studentName==userName.userName){ 
             //if the student name is found, display their due fee
-            console.log(`Payment due ${studentData[i].feeRemaining}`);
+            console.log(chalk.bgGray(`Payment due ${studentData[i].feeRemaining}`));
             
             //if no fee is due, display it
             if(studentData[i].feeRemaining==0){
-                console.log('No fee due')
+                console.log(chalk.bgBlue('No fee due'))
             }
             else
             {
@@ -164,11 +164,6 @@ async function feePayment(){
                 }
                 
             }
-        }
-
-        else{
-            //if user is not found, error will be printed
-            console.log(chalk.bgRed(`Student not in the database.`))
         }
     }
 }
