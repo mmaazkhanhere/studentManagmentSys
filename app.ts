@@ -106,26 +106,72 @@ async function dropStudent(){
     })
 }
 
-async function mainMenu(){
+async function feePayment(){
+    let userName=await inquirer.prompt({
+        name:'userName',
+        type:'input',
+        message:'Enter your name: '
+    });
 
-    let operation=await inquirer.prompt({
-        name:'operation',
-        type:'list',
-        message:'Select an operation you want to perform: ',
-        choices:['Students Enrolled','Add New Student','Drop Student','Pay Fees']
-    })
-
-    switch(operation.operation){
-        case 'Students Enrolled':
-            await studentList();
-            break;
-        case 'Add New Student':
-            await addStudent();
-            break;
-        case 'Drop Student':
-            await dropStudent();
-            break;
+    for(let i=0;i<studentData.length;i++){
+        if(studentData[i].studentName==userName.userName){
+            console.log(`Payment due ${studentData[i].feesRemaining}`);
+            if(studentData[i].feesRemaining==0){
+                console.log('No fee due')
+            }
+            else
+            {
+                let feepayment=await inquirer.prompt({
+                    name:'feepayment',
+                    type:'number',
+                    message:'Enter fee to pay: '
+                })
+                if(feepayment.feepayment==studentData[i].feesRemaining){
+                    console.log(chalk.bgBlue(`Fee successful paid`))
+                    studentData[i].feesDeposited=3000;
+                    studentData[i].feesRemaining=0;
+                    console.table(studentData[i]);
+                }
+                else{
+                    console.log(chalk.bgRed('Wrong amount entered!'));
+                }
+                
+            }
+        }
     }
+}
+
+async function mainMenu(){
+    do
+    {    
+        let operation=await inquirer.prompt({
+            name:'operation',
+            type:'list',
+            message:'Select an operation you want to perform: ',
+            choices:['Students Enrolled','Add New Student','Drop Student','Pay Fees']
+        })
+
+        switch(operation.operation){
+            case 'Students Enrolled':
+                await studentList();
+                break;
+            case 'Add New Student':
+                await addStudent();
+                break;
+            case 'Drop Student':
+                await dropStudent();
+                break;
+            case 'Pay Fees':
+                await feePayment();
+                break;
+        }
+        var doAgain=await inquirer.prompt({
+            name:'doAgain',
+            type:'list',
+            message:'Do you want to perform other operations?',
+            choices:['Yes','No']
+        })
+    }while(doAgain.doAgain=='Yes')
 }
 await animation();
 mainMenu();
